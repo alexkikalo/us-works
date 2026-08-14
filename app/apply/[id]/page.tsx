@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { getJobById } from "@/lib/jobs";
+import { formatPayRange } from "@/lib/pay";
 
 export default function ApplyPage({ params }: { params: { id: string } }) {
-  const job = getJobById(params.id) || {
-    title: "Manufacturing Position",
-    company: "Company",
-    location: "United States",
-    salary: "Competitive",
-  };
+  const job = getJobById(params.id);
+
+  const title = job?.title ?? "Manufacturing Position";
+  const company = job?.company ?? "Company";
+  const location = job?.location ?? "United States";
+  const payHourly = job ? formatPayRange(job.pay, "hourly") : null;
+  const paySalary = job ? formatPayRange(job.pay, "salary") : null;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
@@ -16,10 +18,19 @@ export default function ApplyPage({ params }: { params: { id: string } }) {
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">{job.title}</h1>
+        <h1 className="text-2xl font-bold text-white">{title}</h1>
         <p className="text-slate-400 mt-1">
-          {job.company} · {job.location} · {job.salary}
+          {company} · {location}
         </p>
+        {payHourly && paySalary && (
+          <div className="mt-3 text-sm">
+            <p className="text-sky-400 font-medium">{payHourly.primary}</p>
+            <p className="text-slate-500 text-xs mt-0.5">{payHourly.secondary}</p>
+            <p className="text-slate-500 text-xs mt-1">
+              Or as salary view: {paySalary.primary}
+            </p>
+          </div>
+        )}
       </div>
 
       <form className="space-y-6 bg-slate-900 p-6 md:p-8 rounded-xl border border-slate-800">
@@ -31,7 +42,7 @@ export default function ApplyPage({ params }: { params: { id: string } }) {
           <p className="text-xs text-slate-500 mb-3">
             30–90 second <strong className="text-slate-400">vertical phone video</strong> or a clear
             photo for <strong className="text-slate-400">this application only</strong>. Goes to this
-            employer only — not a public board. Show how you work or introduce your experience.
+            employer only — not a public board.
           </p>
           <div className="border-2 border-dashed border-slate-700 rounded-lg p-8 text-center text-slate-500 bg-slate-950/50">
             <div className="mx-auto mb-3 w-16 aspect-[9/16] rounded-md border border-slate-600 bg-slate-900 flex items-center justify-center text-[10px] text-slate-600">

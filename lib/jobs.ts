@@ -1,25 +1,26 @@
+import type { PayRange } from "./pay";
+
 export type Job = {
   id: string;
   title: string;
   company: string;
   location: string;
-  salary: string;
+  /** Structured pay — required on real posts */
+  pay: PayRange;
   tags: string[];
   photoUrl: string;
   photoCaption: string;
-  // Approximate city-level coordinates for privacy (not exact addresses)
   lat: number;
   lng: number;
 };
 
-// National US manufacturing mock data — city-level proximity only
 export const mockJobs: Job[] = [
   {
     id: "1",
     title: "CNC Machinist — 2nd Shift",
     company: "Precision Forge LLC",
     location: "Cleveland, OH",
-    salary: "$28–$34/hr",
+    pay: { type: "hourly", min: 28, max: 34 },
     tags: ["CNC", "Machining", "2nd Shift"],
     photoUrl: "https://images.unsplash.com/photo-1565043666747-69f6646db940?w=600&h=400&fit=crop",
     photoCaption: "Shop floor — CNC cells and tool crib",
@@ -31,7 +32,7 @@ export const mockJobs: Job[] = [
     title: "Assembly Technician",
     company: "Midwest Sensors",
     location: "Grand Rapids, MI",
-    salary: "$22–$26/hr",
+    pay: { type: "hourly", min: 22, max: 26 },
     tags: ["Assembly", "Electronics", "Day Shift"],
     photoUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
     photoCaption: "Clean assembly area — real workstations",
@@ -43,7 +44,7 @@ export const mockJobs: Job[] = [
     title: "Maintenance Mechanic",
     company: "Heartland Fabrication",
     location: "Indianapolis, IN",
-    salary: "$30–$38/hr",
+    pay: { type: "hourly", min: 30, max: 38 },
     tags: ["Maintenance", "Hydraulics", "On-call"],
     photoUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&h=400&fit=crop",
     photoCaption: "Plant maintenance bay",
@@ -55,7 +56,7 @@ export const mockJobs: Job[] = [
     title: "Quality Inspector",
     company: "Southern Metal Works",
     location: "Greenville, SC",
-    salary: "$24–$29/hr",
+    pay: { type: "hourly", min: 24, max: 29 },
     tags: ["Quality", "CMM", "ISO"],
     photoUrl: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop",
     photoCaption: "Inspection lab with CMM",
@@ -67,7 +68,7 @@ export const mockJobs: Job[] = [
     title: "Welder — MIG/TIG",
     company: "Gulf Coast Structures",
     location: "Houston, TX",
-    salary: "$26–$32/hr",
+    pay: { type: "hourly", min: 26, max: 32 },
     tags: ["Welding", "Structural", "Fabrication"],
     photoUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&h=400&fit=crop",
     photoCaption: "Welding bay — real production work",
@@ -79,7 +80,7 @@ export const mockJobs: Job[] = [
     title: "Production Supervisor",
     company: "Pacific Automation",
     location: "Portland, OR",
-    salary: "$65k–$78k",
+    pay: { type: "salary", min: 65000, max: 78000 },
     tags: ["Supervisor", "Lean", "Day Shift"],
     photoUrl: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop",
     photoCaption: "Production floor overview",
@@ -91,7 +92,7 @@ export const mockJobs: Job[] = [
     title: "Machine Operator — Press Brake",
     company: "Great Lakes Forming",
     location: "Milwaukee, WI",
-    salary: "$23–$28/hr",
+    pay: { type: "hourly", min: 23, max: 28 },
     tags: ["Press Brake", "Forming", "1st Shift"],
     photoUrl: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&h=400&fit=crop",
     photoCaption: "Press brake and forming area",
@@ -103,7 +104,7 @@ export const mockJobs: Job[] = [
     title: "Industrial Electrician",
     company: "Northeast Systems",
     location: "Buffalo, NY",
-    salary: "$32–$42/hr",
+    pay: { type: "hourly", min: 32, max: 42 },
     tags: ["Electrical", "PLC", "Troubleshooting"],
     photoUrl: "https://images.unsplash.com/photo-1621905252507-b35492db9b87?w=600&h=400&fit=crop",
     photoCaption: "Controls and electrical shop",
@@ -115,7 +116,7 @@ export const mockJobs: Job[] = [
     title: "Fabrication Lead",
     company: "Rocky Mountain Steel",
     location: "Denver, CO",
-    salary: "$28–$35/hr",
+    pay: { type: "hourly", min: 28, max: 35 },
     tags: ["Fabrication", "Leadership", "MIG"],
     photoUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&h=400&fit=crop",
     photoCaption: "Fabrication floor — real production",
@@ -127,7 +128,7 @@ export const mockJobs: Job[] = [
     title: "Paint / Powder Coat Operator",
     company: "Southeast Coatings",
     location: "Charlotte, NC",
-    salary: "$20–$25/hr",
+    pay: { type: "hourly", min: 20, max: 25 },
     tags: ["Powder Coat", "Finishing", "2nd Shift"],
     photoUrl: "https://images.unsplash.com/photo-1581092162384-8987c1d64718?w=600&h=400&fit=crop",
     photoCaption: "Finishing and powder coat line",
@@ -139,7 +140,7 @@ export const mockJobs: Job[] = [
     title: "Manufacturing Engineer",
     company: "Bay Area Precision",
     location: "San Jose, CA",
-    salary: "$95k–$125k",
+    pay: { type: "salary", min: 95000, max: 125000 },
     tags: ["Engineering", "Process", "Lean"],
     photoUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
     photoCaption: "Engineering and process area",
@@ -151,7 +152,7 @@ export const mockJobs: Job[] = [
     title: "Shipping & Receiving Clerk",
     company: "Central Logistics",
     location: "Kansas City, MO",
-    salary: "$18–$22/hr",
+    pay: { type: "hourly", min: 18, max: 22 },
     tags: ["Warehouse", "Forklift", "Day Shift"],
     photoUrl: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=400&fit=crop",
     photoCaption: "Shipping dock and staging area",
@@ -163,7 +164,7 @@ export const mockJobs: Job[] = [
     title: "Tool & Die Maker",
     company: "Ohio Tooling Co",
     location: "Toledo, OH",
-    salary: "$30–$38/hr",
+    pay: { type: "hourly", min: 30, max: 38 },
     tags: ["Tool & Die", "Precision", "Experienced"],
     photoUrl: "https://images.unsplash.com/photo-1565043666747-69f6646db940?w=600&h=400&fit=crop",
     photoCaption: "Tool room and precision work",
@@ -175,7 +176,7 @@ export const mockJobs: Job[] = [
     title: "Production Operator — Automotive",
     company: "Motor City Components",
     location: "Detroit, MI",
-    salary: "$21–$27/hr",
+    pay: { type: "hourly", min: 21, max: 27 },
     tags: ["Automotive", "Assembly", "Shift Work"],
     photoUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
     photoCaption: "Automotive assembly line",
@@ -187,7 +188,7 @@ export const mockJobs: Job[] = [
     title: "Plant Manager",
     company: "Southern Manufacturing Group",
     location: "Birmingham, AL",
-    salary: "$95k–$120k",
+    pay: { type: "salary", min: 95000, max: 120000 },
     tags: ["Management", "Operations", "Leadership"],
     photoUrl: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop",
     photoCaption: "Plant operations overview",

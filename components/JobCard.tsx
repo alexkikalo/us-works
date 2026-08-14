@@ -1,8 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Job } from "@/lib/jobs";
+import { formatPayRange, type PayType } from "@/lib/pay";
 
-export function JobCard({ job }: { job: Job }) {
+export function JobCard({
+  job,
+  payDisplay = "hourly",
+}: {
+  job: Job;
+  payDisplay?: PayType;
+}) {
+  const pay = formatPayRange(job.pay, payDisplay);
+
   return (
     <article className="job-card bg-slate-900 rounded-xl overflow-hidden border border-slate-800 hover:border-slate-600 transition-all hover:shadow-lg hover:shadow-sky-900/20">
       <div className="relative aspect-[4/3] bg-slate-800">
@@ -21,7 +30,8 @@ export function JobCard({ job }: { job: Job }) {
         <h2 className="font-semibold text-white leading-snug">{job.title}</h2>
         <p className="text-sm text-slate-400 mt-1">{job.company}</p>
         <p className="text-sm text-slate-500">{job.location}</p>
-        <p className="text-sm font-medium text-sky-400 mt-2">{job.salary}</p>
+        <p className="text-sm font-medium text-sky-400 mt-2">{pay.primary}</p>
+        <p className="text-xs text-slate-500 mt-0.5">{pay.secondary}</p>
         <div className="flex flex-wrap gap-1.5 mt-3">
           {job.tags.map((tag) => (
             <span
