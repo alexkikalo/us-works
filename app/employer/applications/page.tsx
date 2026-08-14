@@ -5,11 +5,12 @@ import Link from "next/link";
 import {
   mockApplications,
   getEmployerJobs,
+  PIPELINE_STAGES,
   type Application,
   type RatingValue,
+  type PipelineStage,
 } from "@/lib/applications";
 
-/** Full class strings kept in this file so Tailwind does not purge them */
 const RATING_UI: {
   value: Exclude<RatingValue, null>;
   label: string;
@@ -74,12 +75,38 @@ function RatingPicker({
                 : "border-slate-700 bg-slate-950 text-slate-400 hover:border-slate-500 hover:text-slate-200"
             }`}
           >
-            <span
-              className={`h-2.5 w-2.5 shrink-0 rounded-full ${opt.dot} ${
-                selected ? "opacity-100" : "opacity-80"
-              }`}
-            />
+            <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${opt.dot}`} />
             {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function PipelinePicker({
+  value,
+  onChange,
+}: {
+  value: PipelineStage;
+  onChange: (v: PipelineStage) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {PIPELINE_STAGES.map((s) => {
+        const active = value === s.value;
+        return (
+          <button
+            key={s.value}
+            type="button"
+            onClick={() => onChange(s.value)}
+            className={`text-xs sm:text-sm px-2.5 py-1.5 rounded-lg border transition-colors ${
+              active
+                ? "bg-sky-600 border-sky-500 text-white"
+                : "border-slate-700 bg-slate-950 text-slate-400 hover:border-slate-500 hover:text-slate-200"
+            }`}
+          >
+            {s.label}
           </button>
         );
       })}
@@ -91,16 +118,22 @@ function DossierCard({
   app,
   rating,
   notes,
+  stage,
   onRating,
   onNotes,
+  onStage,
 }: {
   app: Application;
   rating: RatingValue;
   notes: string;
+  stage: PipelineStage;
   onRating: (v: RatingValue) => void;
   onNotes: (n: string) => void;
+  onStage: (s: PipelineStage) => void;
 }) {
   const ratingMeta = RATING_UI.find((o) => o.value === rating);
+  const stageLabel =
+    PIPELINE_STAGES.find((s) => s.value === stage)?.label ?? stage;
 
   return (
     <article className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
@@ -119,17 +152,20 @@ function DossierCard({
             <p className="text-sm text-slate-400 mt-0.5 truncate">
               Applied to <span className="text-sky-400">{app.jobTitle}</span>
             </p>
-            {ratingMeta && (
-              <p className="text-xs mt-1 text-slate-400">
-                Rated:{" "}
-                <span className="text-slate-200 font-medium">{ratingMeta.label}</span>
-              </p>
-            )}
+            <div className="flex flex-wrap gap-2 mt-1.5 text-xs">
+              <span className="text-slate-300 bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-full">
+                {stageLabel}
+              </span>
+              {ratingMeta && (
+                <span className="text-slate-400">
+                  Rated: <span className="text-slate-200">{ratingMeta.label}</span>
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="text-right text-xs text-slate-500 shrink-0">
-          <div className="uppercase tracking-wide">{app.status}</div>
-          <div className="mt-0.5">{app.submittedAt}</div>
+          <div>{app.submittedAt}</div>
         </div>
       </div>
 
@@ -149,6 +185,17 @@ function DossierCard({
             <div className="w-[120px] aspect-[9/16] rounded-lg bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center">
               <span className="text-[10px] text-slate-600 text-center px-2">No pitch media</span>
             </div>
+          )}
+
+          {app.hasResume ? (
+            <button
+              type="button"
+              className="w-full text-xs text-sky-400 hover:text-sky-300 border border-slate-700 hover:border-sky-700 rounded-lg py-2 px-2 transition-colors"
+            >
+              View resume / CV
+            </button>
+          ) : (
+            <p className="text-[10px] text-slate-600 text-center">No resume uploaded</p>
           )}
         </div>
 
@@ -177,6 +224,11 @@ function DossierCard({
           </dl>
 
           <div>
+            <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Pipeline</p>
+            <PipelinePicker value={stage} onChange={onStage} />
+          </div>
+
+          <div>
             <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Your take</p>
             <RatingPicker value={rating} onChange={onRating} />
           </div>
@@ -193,21 +245,6 @@ function DossierCard({
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-y"
             />
           </div>
-
-          <div className="flex flex-wrap gap-2 pt-1">
-            <button
-              type="button"
-              className="text-sm bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg transition-colors"
-            >
-              Mark reviewed
-            </button>
-            <button
-              type="button"
-              className="text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors"
-            >
-              Archive
-            </button>
-          </div>
         </div>
       </div>
     </article>
@@ -217,19 +254,41 @@ function DossierCard({
 export default function EmployerApplicationsPage() {
   const jobs = useMemo(() => getEmployerJobs(mockApplications), []);
   const [jobFilter, setJobFilter] = useState<string>("all");
+  const [stageFilter, setStageFilter] = useState<PipelineStage | "all">("all");
+  const [ratingFilter, setRatingFilter] = useState<RatingValue | "all" | "unrated">(
+    "all"
+  );
+
   const [ratings, setRatings] = useState<Record<string, RatingValue>>(() =>
     Object.fromEntries(mockApplications.map((a) => [a.id, a.rating]))
   );
   const [notes, setNotes] = useState<Record<string, string>>(() =>
     Object.fromEntries(mockApplications.map((a) => [a.id, a.notes]))
   );
+  const [stages, setStages] = useState<Record<string, PipelineStage>>(() =>
+    Object.fromEntries(mockApplications.map((a) => [a.id, a.stage]))
+  );
 
   const filtered = useMemo(() => {
-    if (jobFilter === "all") return mockApplications;
-    return mockApplications.filter((a) => a.jobId === jobFilter);
-  }, [jobFilter]);
+    return mockApplications.filter((a) => {
+      if (jobFilter !== "all" && a.jobId !== jobFilter) return false;
+      const stage = stages[a.id] ?? a.stage;
+      if (stageFilter !== "all" && stage !== stageFilter) return false;
+      const rating = ratings[a.id] ?? a.rating;
+      if (ratingFilter === "unrated" && rating !== null) return false;
+      if (
+        ratingFilter !== "all" &&
+        ratingFilter !== "unrated" &&
+        rating !== ratingFilter
+      )
+        return false;
+      return true;
+    });
+  }, [jobFilter, stageFilter, ratingFilter, stages, ratings]);
 
-  const newCount = filtered.filter((a) => a.status === "new").length;
+  const newInView = filtered.filter(
+    (a) => (stages[a.id] ?? a.stage) === "new"
+  ).length;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -241,14 +300,15 @@ export default function EmployerApplicationsPage() {
           Application feed
         </h1>
         <p className="text-slate-400 text-sm sm:text-base">
-          Review candidates by job. Portrait pitch media stays private to this account.
+          Filter by job, pipeline stage, and rating. Resume/CV when the candidate uploaded one.
         </p>
-        {newCount > 0 && (
-          <p className="mt-2 text-sm text-sky-400">{newCount} new in this view</p>
+        {newInView > 0 && (
+          <p className="mt-2 text-sm text-sky-400">{newInView} new in this view</p>
         )}
       </div>
 
-      <div className="mb-8 overflow-x-auto">
+      {/* Job tabs */}
+      <div className="mb-4 overflow-x-auto">
         <div className="inline-flex min-w-full sm:min-w-0 gap-1 p-1 rounded-xl border border-slate-800 bg-slate-950">
           <button
             type="button"
@@ -279,6 +339,82 @@ export default function EmployerApplicationsPage() {
         </div>
       </div>
 
+      {/* Pipeline sub-filters (stages under the selected job context) */}
+      <div className="mb-3">
+        <p className="text-xs text-slate-500 mb-1.5">Pipeline</p>
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            type="button"
+            onClick={() => setStageFilter("all")}
+            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              stageFilter === "all"
+                ? "bg-slate-100 text-slate-900 border-slate-100"
+                : "border-slate-700 text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            All stages
+          </button>
+          {PIPELINE_STAGES.map((s) => (
+            <button
+              key={s.value}
+              type="button"
+              onClick={() => setStageFilter(s.value)}
+              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                stageFilter === s.value
+                  ? "bg-slate-100 text-slate-900 border-slate-100"
+                  : "border-slate-700 text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Rating filters */}
+      <div className="mb-8">
+        <p className="text-xs text-slate-500 mb-1.5">Rating</p>
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            type="button"
+            onClick={() => setRatingFilter("all")}
+            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              ratingFilter === "all"
+                ? "bg-slate-100 text-slate-900 border-slate-100"
+                : "border-slate-700 text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            All ratings
+          </button>
+          <button
+            type="button"
+            onClick={() => setRatingFilter("unrated")}
+            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              ratingFilter === "unrated"
+                ? "bg-slate-100 text-slate-900 border-slate-100"
+                : "border-slate-700 text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Unrated
+          </button>
+          {RATING_UI.map((r) => (
+            <button
+              key={r.value}
+              type="button"
+              onClick={() => setRatingFilter(r.value)}
+              className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                ratingFilter === r.value
+                  ? "bg-slate-100 text-slate-900 border-slate-100"
+                  : "border-slate-700 text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${r.dot}`} />
+              {r.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="space-y-5">
         {filtered.map((app) => (
           <DossierCard
@@ -286,12 +422,16 @@ export default function EmployerApplicationsPage() {
             app={app}
             rating={ratings[app.id] ?? null}
             notes={notes[app.id] ?? ""}
+            stage={stages[app.id] ?? app.stage}
             onRating={(v) => setRatings((r) => ({ ...r, [app.id]: v }))}
             onNotes={(n) => setNotes((prev) => ({ ...prev, [app.id]: n }))}
+            onStage={(s) => setStages((prev) => ({ ...prev, [app.id]: s }))}
           />
         ))}
         {filtered.length === 0 && (
-          <p className="text-center text-slate-500 py-12">No applications for this job yet.</p>
+          <p className="text-center text-slate-500 py-12">
+            No applications match these filters.
+          </p>
         )}
       </div>
 

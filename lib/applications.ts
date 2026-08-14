@@ -6,6 +6,14 @@ export type RatingValue =
   | "not_a_fit"
   | null;
 
+export type PipelineStage =
+  | "new"
+  | "reviewing"
+  | "interview"
+  | "offer"
+  | "hired"
+  | "archived";
+
 export type Application = {
   id: string;
   jobId: string;
@@ -18,60 +26,23 @@ export type Application = {
   skills: string;
   hasPitchMedia: boolean;
   pitchNote: string;
+  hasResume: boolean;
   submittedAt: string;
-  status: "new" | "reviewed" | "archived";
+  stage: PipelineStage;
   rating: RatingValue;
   notes: string;
 };
 
-export const RATING_OPTIONS: {
-  value: Exclude<RatingValue, null>;
+export const PIPELINE_STAGES: {
+  value: PipelineStage;
   label: string;
-  short: string;
-  color: string;
-  ring: string;
-  bg: string;
 }[] = [
-  {
-    value: "lets_talk",
-    label: "Let's talk",
-    short: "Talk",
-    color: "bg-emerald-500",
-    ring: "ring-emerald-500/40",
-    bg: "bg-emerald-950/40 border-emerald-700 text-emerald-300",
-  },
-  {
-    value: "promising",
-    label: "Promising",
-    short: "Promising",
-    color: "bg-sky-500",
-    ring: "ring-sky-500/40",
-    bg: "bg-sky-950/40 border-sky-700 text-sky-300",
-  },
-  {
-    value: "sitting",
-    label: "Sitting on it",
-    short: "Hold",
-    color: "bg-amber-500",
-    ring: "ring-amber-500/40",
-    bg: "bg-amber-950/40 border-amber-700 text-amber-300",
-  },
-  {
-    value: "long_shot",
-    label: "Long shot",
-    short: "Stretch",
-    color: "bg-orange-500",
-    ring: "ring-orange-500/40",
-    bg: "bg-orange-950/40 border-orange-700 text-orange-300",
-  },
-  {
-    value: "not_a_fit",
-    label: "Not a fit",
-    short: "Pass",
-    color: "bg-slate-500",
-    ring: "ring-slate-500/40",
-    bg: "bg-slate-900 border-slate-600 text-slate-400",
-  },
+  { value: "new", label: "New" },
+  { value: "reviewing", label: "Reviewing" },
+  { value: "interview", label: "Interview" },
+  { value: "offer", label: "Offer" },
+  { value: "hired", label: "Hired" },
+  { value: "archived", label: "Archived" },
 ];
 
 export const mockApplications: Application[] = [
@@ -87,8 +58,9 @@ export const mockApplications: Application[] = [
     skills: "Haas, Fanuc, tight-tolerance work, first article",
     hasPitchMedia: true,
     pitchNote: "30s vertical reel — setup experience",
+    hasResume: true,
     submittedAt: "2026-08-12",
-    status: "new",
+    stage: "new",
     rating: null,
     notes: "",
   },
@@ -104,8 +76,9 @@ export const mockApplications: Application[] = [
     skills: "Vertical mills, inspection, 2nd shift preferred",
     hasPitchMedia: false,
     pitchNote: "",
+    hasResume: true,
     submittedAt: "2026-08-11",
-    status: "new",
+    stage: "new",
     rating: null,
     notes: "",
   },
@@ -121,8 +94,9 @@ export const mockApplications: Application[] = [
     skills: "MIG, TIG, blueprint reading",
     hasPitchMedia: true,
     pitchNote: "Portrait clip of weld work",
+    hasResume: true,
     submittedAt: "2026-08-10",
-    status: "reviewed",
+    stage: "interview",
     rating: "promising",
     notes: "Solid communication. Confirm structural certs.",
   },
@@ -138,8 +112,9 @@ export const mockApplications: Application[] = [
     skills: "Hydraulics, pneumatics, preventive maintenance",
     hasPitchMedia: false,
     pitchNote: "",
+    hasResume: false,
     submittedAt: "2026-08-09",
-    status: "reviewed",
+    stage: "reviewing",
     rating: "lets_talk",
     notes: "Strong tenure. Schedule phone screen.",
   },
@@ -155,8 +130,9 @@ export const mockApplications: Application[] = [
     skills: "MIG, structural, fabrication lead experience",
     hasPitchMedia: true,
     pitchNote: "Vertical reel — shop introduction",
+    hasResume: true,
     submittedAt: "2026-08-08",
-    status: "archived",
+    stage: "archived",
     rating: "long_shot",
     notes: "Overqualified for pure production seat; keep for lead role later.",
   },
