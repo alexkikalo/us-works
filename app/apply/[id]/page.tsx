@@ -29,13 +29,17 @@ export default function ApplyPage({ params }: { params: { id: string } }) {
             <span className="text-sky-400">(optional — highly encouraged)</span>
           </label>
           <p className="text-xs text-slate-500 mb-3">
-            30–90 second video or a clear photo for <strong className="text-slate-400">this application only</strong>.
-            It goes to this employer, not a public board. Show how you work or introduce your experience.
+            30–90 second <strong className="text-slate-400">vertical phone video</strong> or a clear
+            photo for <strong className="text-slate-400">this application only</strong>. Goes to this
+            employer only — not a public board. Show how you work or introduce your experience.
           </p>
-          <div className="border-2 border-dashed border-slate-700 rounded-lg p-10 text-center text-slate-500 bg-slate-950/50">
-            Upload video or photo
+          <div className="border-2 border-dashed border-slate-700 rounded-lg p-8 text-center text-slate-500 bg-slate-950/50">
+            <div className="mx-auto mb-3 w-16 aspect-[9/16] rounded-md border border-slate-600 bg-slate-900 flex items-center justify-center text-[10px] text-slate-600">
+              9:16
+            </div>
+            Upload portrait video or photo
             <br />
-            <span className="text-xs mt-1 block">Phone video is fine · Visible only to this employer</span>
+            <span className="text-xs mt-1 block">Phone camera vertical · Visible only to this employer</span>
           </div>
         </div>
 
