@@ -4,11 +4,53 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   mockApplications,
-  RATING_OPTIONS,
   getEmployerJobs,
   type Application,
   type RatingValue,
 } from "@/lib/applications";
+
+/** Full class strings kept in this file so Tailwind does not purge them */
+const RATING_UI: {
+  value: Exclude<RatingValue, null>;
+  label: string;
+  dot: string;
+  selected: string;
+}[] = [
+  {
+    value: "lets_talk",
+    label: "Let's talk",
+    dot: "bg-emerald-500",
+    selected:
+      "border-emerald-600 bg-emerald-950 text-emerald-300 ring-2 ring-emerald-500/50",
+  },
+  {
+    value: "promising",
+    label: "Promising",
+    dot: "bg-sky-500",
+    selected: "border-sky-600 bg-sky-950 text-sky-300 ring-2 ring-sky-500/50",
+  },
+  {
+    value: "sitting",
+    label: "Sitting on it",
+    dot: "bg-amber-500",
+    selected:
+      "border-amber-600 bg-amber-950 text-amber-300 ring-2 ring-amber-500/50",
+  },
+  {
+    value: "long_shot",
+    label: "Long shot",
+    dot: "bg-orange-500",
+    selected:
+      "border-orange-600 bg-orange-950 text-orange-300 ring-2 ring-orange-500/50",
+  },
+  {
+    value: "not_a_fit",
+    label: "Not a fit",
+    dot: "bg-rose-500",
+    selected:
+      "border-rose-700 bg-rose-950/80 text-rose-300 ring-2 ring-rose-500/40",
+  },
+];
 
 function RatingPicker({
   value,
@@ -19,7 +61,7 @@ function RatingPicker({
 }) {
   return (
     <div className="flex flex-wrap gap-2">
-      {RATING_OPTIONS.map((opt) => {
+      {RATING_UI.map((opt) => {
         const selected = value === opt.value;
         return (
           <button
@@ -28,11 +70,15 @@ function RatingPicker({
             onClick={() => onChange(selected ? null : opt.value)}
             className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-all ${
               selected
-                ? `${opt.bg} ring-2 ${opt.ring}`
-                : "border-slate-700 bg-slate-950/50 text-slate-400 hover:border-slate-500 hover:text-slate-200"
+                ? opt.selected
+                : "border-slate-700 bg-slate-950 text-slate-400 hover:border-slate-500 hover:text-slate-200"
             }`}
           >
-            <span className={`h-2.5 w-2.5 rounded-full ${opt.color}`} />
+            <span
+              className={`h-2.5 w-2.5 shrink-0 rounded-full ${opt.dot} ${
+                selected ? "opacity-100" : "opacity-80"
+              }`}
+            />
             {opt.label}
           </button>
         );
@@ -54,60 +100,58 @@ function DossierCard({
   onRating: (v: RatingValue) => void;
   onNotes: (n: string) => void;
 }) {
-  const ratingMeta = RATING_OPTIONS.find((o) => o.value === rating);
+  const ratingMeta = RATING_UI.find((o) => o.value === rating);
 
   return (
-    <article className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-      {/* Dossier header */}
-      <div className="border-b border-slate-800 bg-slate-950/60 px-5 py-4 flex flex-wrap items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
-          {ratingMeta ? (
-            <span
-              className={`mt-1.5 h-3 w-3 rounded-full shrink-0 ${ratingMeta.color}`}
-              title={ratingMeta.label}
-            />
-          ) : (
-            <span className="mt-1.5 h-3 w-3 rounded-full shrink-0 bg-slate-700" title="Unrated" />
-          )}
-          <div>
+    <article className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="border-b border-slate-800 bg-slate-950/70 px-5 py-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="flex items-start gap-3 min-w-0">
+          <span
+            className={`mt-1.5 h-3 w-3 rounded-full shrink-0 ring-2 ring-slate-900 ${
+              ratingMeta ? ratingMeta.dot : "bg-slate-600"
+            }`}
+            title={ratingMeta ? ratingMeta.label : "Unrated"}
+          />
+          <div className="min-w-0">
             <h2 className="text-lg font-semibold text-white tracking-tight">
               {app.candidateName}
             </h2>
-            <p className="text-sm text-slate-400 mt-0.5">
-              Applied to{" "}
-              <span className="text-sky-400">{app.jobTitle}</span>
+            <p className="text-sm text-slate-400 mt-0.5 truncate">
+              Applied to <span className="text-sky-400">{app.jobTitle}</span>
             </p>
+            {ratingMeta && (
+              <p className="text-xs mt-1 text-slate-400">
+                Rated:{" "}
+                <span className="text-slate-200 font-medium">{ratingMeta.label}</span>
+              </p>
+            )}
           </div>
         </div>
-        <div className="text-right text-xs text-slate-500">
+        <div className="text-right text-xs text-slate-500 shrink-0">
           <div className="uppercase tracking-wide">{app.status}</div>
           <div className="mt-0.5">{app.submittedAt}</div>
         </div>
       </div>
 
-      <div className="p-5 grid md:grid-cols-[140px_1fr] gap-5">
-        {/* Portrait media column */}
-        <div className="flex flex-col items-center md:items-stretch gap-2">
+      <div className="p-5 grid md:grid-cols-[132px_1fr] gap-5">
+        <div className="flex flex-col items-center gap-2">
           {app.hasPitchMedia ? (
             <>
-              <div className="w-[120px] md:w-full mx-auto aspect-[9/16] max-h-[220px] rounded-lg bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-center px-2">
+              <div className="w-[120px] aspect-[9/16] rounded-lg bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-center px-2">
                 <span className="text-sky-400 text-xs font-medium">Portrait reel</span>
                 <span className="text-[10px] text-slate-500 mt-1 leading-snug">
                   {app.pitchNote || "Vertical phone video"}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 text-center">
-                Private · this job only
-              </p>
+              <p className="text-[10px] text-slate-500 text-center">Private · this job only</p>
             </>
           ) : (
-            <div className="w-[120px] md:w-full mx-auto aspect-[9/16] max-h-[180px] rounded-lg bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center">
+            <div className="w-[120px] aspect-[9/16] rounded-lg bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center">
               <span className="text-[10px] text-slate-600 text-center px-2">No pitch media</span>
             </div>
           )}
         </div>
 
-        {/* Details */}
         <div className="min-w-0 space-y-4">
           <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
@@ -197,17 +241,13 @@ export default function EmployerApplicationsPage() {
           Application feed
         </h1>
         <p className="text-slate-400 text-sm sm:text-base">
-          Dossier-style candidates for your posted jobs. Pitch media is portrait and
-          private to this account — not a public board.
+          Review candidates by job. Portrait pitch media stays private to this account.
         </p>
         {newCount > 0 && (
-          <p className="mt-2 text-sm text-sky-400">
-            {newCount} new in this view
-          </p>
+          <p className="mt-2 text-sm text-sky-400">{newCount} new in this view</p>
         )}
       </div>
 
-      {/* Job tabs */}
       <div className="mb-8 overflow-x-auto">
         <div className="inline-flex min-w-full sm:min-w-0 gap-1 p-1 rounded-xl border border-slate-800 bg-slate-950">
           <button
@@ -256,7 +296,7 @@ export default function EmployerApplicationsPage() {
       </div>
 
       <p className="mt-10 text-center text-xs text-slate-500">
-        Account-scoped feed. Switch jobs above to focus one opening at a time.{" "}
+        Account-scoped.{" "}
         <Link href="/post" className="text-sky-500 hover:text-sky-400">
           Post a job
         </Link>
