@@ -6,20 +6,18 @@
 
 ## Current Features
 - Dark mode
-- Visual Pinterest-style job grid
-- **Map view** (Leaflet + OpenStreetMap) — city-level proximity only, no exact addresses
-- Grid / Map toggle
-- Find a Job | Post a Job navigation
-- Apply flow with highly encouraged elevator-pitch reel/photo + standard application fields
-- 15 mock manufacturing jobs across the United States
+- Visual job grid + **Map view** (Leaflet, city-level proximity only)
+- Find a Job | Post a Job | **Pitch Cards**
+- Apply flow with optional elevator-pitch reel/photo
+- **Pitch Cards** — job seekers post public cards for hiring teams to browse (paid seeker feature)
+- 15 mock jobs + 8 mock pitch cards across the US
 
 ## Privacy
-Job locations are shown at city level only. Exact street addresses are never displayed on the map or public listings.
+Job locations are city-level only. Exact street addresses are never shown.
 
 ## Tech
-- Next.js 14
-- Tailwind CSS
-- Leaflet + react-leaflet (free, no API key)
+- Next.js 14 + Tailwind
+- Leaflet via dynamic import (`ssr: false`) to avoid window errors on build
 
 ## Getting Started
 
@@ -28,13 +26,10 @@ npm install
 npm run dev
 ```
 
-## Next Steps
-- Real image/video upload
-- Auth + employer accounts
-- Database + real postings
-- Stripe for paid job posts
-- Map clustering + radius search
-- Optional Mapbox upgrade later if desired
+## Notes
+- Applying to jobs stays free.
+- Public pitch cards are positioned as a low-cost paid job-seeker feature ($5/mo prototype).
+- Ranking richer job posts higher is intentional product behavior, not recruiting.
 
 ## License
 Private / All rights reserved for now.

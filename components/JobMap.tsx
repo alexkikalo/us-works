@@ -6,22 +6,21 @@ import L from "leaflet";
 import Link from "next/link";
 import type { Job } from "@/lib/jobs";
 
-// Fix default marker icons in Next.js
-const DefaultIcon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
 export function JobMap({ jobs }: { jobs: Job[] }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Fix default marker icons only on the client
+    const DefaultIcon = L.icon({
+      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+      iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+    L.Marker.prototype.options.icon = DefaultIcon;
     setMounted(true);
   }, []);
 
@@ -33,7 +32,6 @@ export function JobMap({ jobs }: { jobs: Job[] }) {
     );
   }
 
-  // Center roughly on contiguous US
   const center: [number, number] = [39.8, -98.5];
 
   return (

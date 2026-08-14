@@ -1,9 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { JobCard } from "@/components/JobCard";
-import { JobMap } from "@/components/JobMap";
 import { mockJobs } from "@/lib/jobs";
+
+// Leaflet must not be imported during SSR
+const JobMap = dynamic(
+  () => import("@/components/JobMap").then((m) => m.JobMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-center text-slate-500">
+        Loading map…
+      </div>
+    ),
+  }
+);
 
 export default function HomePage() {
   const [view, setView] = useState<"grid" | "map">("grid");
@@ -21,7 +34,6 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* View toggle */}
       <div className="flex justify-center mb-8">
         <div className="inline-flex rounded-lg border border-slate-700 bg-slate-900 p-1">
           <button
