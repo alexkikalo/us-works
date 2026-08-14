@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #0f172a;
+  --background: #f8fafc;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Simple masonry-ish grid */
+.job-grid {
+  columns: 1;
+  column-gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .job-grid {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .job-grid {
+    columns: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .job-grid {
+    columns: 4;
+  }
+}
+
+.job-card {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+}
