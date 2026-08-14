@@ -191,7 +191,6 @@ function DossierCard({
             </div>
           </dl>
 
-          {/* Compact pipeline: one dropdown instead of a row of buttons */}
           <div className="flex flex-wrap items-center gap-3">
             <label className="text-xs uppercase tracking-wide text-slate-500 shrink-0">
               Pipeline
@@ -284,13 +283,13 @@ export default function EmployerApplicationsPage() {
           Application feed
         </h1>
         <p className="text-slate-400 text-sm sm:text-base max-w-2xl">
-          Pick a job on the left, narrow with stage and rating, then work dossiers one at a time.
+          Pick a job, narrow with stage and rating, then work dossiers one at a time.
         </p>
       </div>
 
       <div className="grid lg:grid-cols-[240px_1fr] gap-6 items-start">
-        {/* Sidebar: jobs + filters — kills the triple horizontal menu */}
-        <aside className="lg:sticky lg:top-20 space-y-5 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+        {/* Desktop sidebar only */}
+        <aside className="hidden lg:block lg:sticky lg:top-20 space-y-5 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Jobs</p>
             <nav className="space-y-1">
@@ -381,9 +380,8 @@ export default function EmployerApplicationsPage() {
           )}
         </aside>
 
-        {/* Main feed */}
         <div className="space-y-5 min-w-0">
-          {/* Mobile-only job/filter controls (sidebar stacks above on small screens) */}
+          {/* Mobile filters only */}
           <div className="lg:hidden space-y-3 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
             <div>
               <label className="text-xs text-slate-500 block mb-1">Job</label>
@@ -439,6 +437,9 @@ export default function EmployerApplicationsPage() {
                 </select>
               </div>
             </div>
+            {newInView > 0 && (
+              <p className="text-xs text-sky-400">{newInView} new in this view</p>
+            )}
           </div>
 
           {filtered.map((app) => (
