@@ -84,36 +84,6 @@ function RatingPicker({
   );
 }
 
-function PipelinePicker({
-  value,
-  onChange,
-}: {
-  value: PipelineStage;
-  onChange: (v: PipelineStage) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {PIPELINE_STAGES.map((s) => {
-        const active = value === s.value;
-        return (
-          <button
-            key={s.value}
-            type="button"
-            onClick={() => onChange(s.value)}
-            className={`text-xs sm:text-sm px-2.5 py-1.5 rounded-lg border transition-colors ${
-              active
-                ? "bg-sky-600 border-sky-500 text-white"
-                : "border-slate-700 bg-slate-950 text-slate-400 hover:border-slate-500 hover:text-slate-200"
-            }`}
-          >
-            {s.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function DossierCard({
   app,
   rating,
@@ -152,7 +122,7 @@ function DossierCard({
             <p className="text-sm text-slate-400 mt-0.5 truncate">
               Applied to <span className="text-sky-400">{app.jobTitle}</span>
             </p>
-            <div className="flex flex-wrap gap-2 mt-1.5 text-xs">
+            <div className="flex flex-wrap gap-2 mt-1.5 text-xs items-center">
               <span className="text-slate-300 bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-full">
                 {stageLabel}
               </span>
@@ -164,9 +134,7 @@ function DossierCard({
             </div>
           </div>
         </div>
-        <div className="text-right text-xs text-slate-500 shrink-0">
-          <div>{app.submittedAt}</div>
-        </div>
+        <div className="text-right text-xs text-slate-500 shrink-0">{app.submittedAt}</div>
       </div>
 
       <div className="p-5 grid md:grid-cols-[132px_1fr] gap-5">
@@ -223,9 +191,22 @@ function DossierCard({
             </div>
           </dl>
 
-          <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Pipeline</p>
-            <PipelinePicker value={stage} onChange={onStage} />
+          {/* Compact pipeline: one dropdown instead of a row of buttons */}
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="text-xs uppercase tracking-wide text-slate-500 shrink-0">
+              Pipeline
+            </label>
+            <select
+              value={stage}
+              onChange={(e) => onStage(e.target.value as PipelineStage)}
+              className="bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 min-w-[160px]"
+            >
+              {PIPELINE_STAGES.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -290,149 +271,194 @@ export default function EmployerApplicationsPage() {
     (a) => (stages[a.id] ?? a.stage) === "new"
   ).length;
 
+  const selectClass =
+    "w-full bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500";
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
-      <div className="mb-6">
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="mb-8">
         <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">
           Employer account · private
         </p>
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
           Application feed
         </h1>
-        <p className="text-slate-400 text-sm sm:text-base">
-          Filter by job, pipeline stage, and rating. Resume/CV when the candidate uploaded one.
+        <p className="text-slate-400 text-sm sm:text-base max-w-2xl">
+          Pick a job on the left, narrow with stage and rating, then work dossiers one at a time.
         </p>
-        {newInView > 0 && (
-          <p className="mt-2 text-sm text-sky-400">{newInView} new in this view</p>
-        )}
       </div>
 
-      {/* Job tabs */}
-      <div className="mb-4 overflow-x-auto">
-        <div className="inline-flex min-w-full sm:min-w-0 gap-1 p-1 rounded-xl border border-slate-800 bg-slate-950">
-          <button
-            type="button"
-            onClick={() => setJobFilter("all")}
-            className={`shrink-0 px-3 py-2 text-sm rounded-lg transition-colors ${
-              jobFilter === "all"
-                ? "bg-sky-600 text-white"
-                : "text-slate-400 hover:text-white hover:bg-slate-900"
-            }`}
-          >
-            All jobs
-          </button>
-          {jobs.map((job) => (
-            <button
-              key={job.id}
-              type="button"
-              onClick={() => setJobFilter(job.id)}
-              className={`shrink-0 px-3 py-2 text-sm rounded-lg transition-colors max-w-[200px] truncate ${
-                jobFilter === job.id
-                  ? "bg-sky-600 text-white"
-                  : "text-slate-400 hover:text-white hover:bg-slate-900"
-              }`}
-              title={job.title}
-            >
-              {job.title}
-            </button>
+      <div className="grid lg:grid-cols-[240px_1fr] gap-6 items-start">
+        {/* Sidebar: jobs + filters — kills the triple horizontal menu */}
+        <aside className="lg:sticky lg:top-20 space-y-5 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Jobs</p>
+            <nav className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setJobFilter("all")}
+                className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
+                  jobFilter === "all"
+                    ? "bg-sky-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
+              >
+                All jobs
+              </button>
+              {jobs.map((job) => (
+                <button
+                  key={job.id}
+                  type="button"
+                  onClick={() => setJobFilter(job.id)}
+                  className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors line-clamp-2 ${
+                    jobFilter === job.id
+                      ? "bg-sky-600 text-white"
+                      : "text-slate-300 hover:bg-slate-800"
+                  }`}
+                  title={job.title}
+                >
+                  {job.title}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div className="border-t border-slate-800 pt-4 space-y-3">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Filters</p>
+            <div>
+              <label className="text-xs text-slate-500 block mb-1">Pipeline stage</label>
+              <select
+                value={stageFilter}
+                onChange={(e) =>
+                  setStageFilter(e.target.value as PipelineStage | "all")
+                }
+                className={selectClass}
+              >
+                <option value="all">All stages</option>
+                {PIPELINE_STAGES.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 block mb-1">Rating</label>
+              <select
+                value={ratingFilter ?? "all"}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === "all" || v === "unrated") setRatingFilter(v);
+                  else setRatingFilter(v as RatingValue);
+                }}
+                className={selectClass}
+              >
+                <option value="all">All ratings</option>
+                <option value="unrated">Unrated</option>
+                {RATING_UI.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {(stageFilter !== "all" || ratingFilter !== "all") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setStageFilter("all");
+                  setRatingFilter("all");
+                }}
+                className="text-xs text-sky-400 hover:text-sky-300"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+
+          {newInView > 0 && (
+            <p className="text-xs text-sky-400 pt-1">{newInView} new in this view</p>
+          )}
+        </aside>
+
+        {/* Main feed */}
+        <div className="space-y-5 min-w-0">
+          {/* Mobile-only job/filter controls (sidebar stacks above on small screens) */}
+          <div className="lg:hidden space-y-3 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+            <div>
+              <label className="text-xs text-slate-500 block mb-1">Job</label>
+              <select
+                value={jobFilter}
+                onChange={(e) => setJobFilter(e.target.value)}
+                className={selectClass}
+              >
+                <option value="all">All jobs</option>
+                {jobs.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-slate-500 block mb-1">Stage</label>
+                <select
+                  value={stageFilter}
+                  onChange={(e) =>
+                    setStageFilter(e.target.value as PipelineStage | "all")
+                  }
+                  className={selectClass}
+                >
+                  <option value="all">All</option>
+                  {PIPELINE_STAGES.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 block mb-1">Rating</label>
+                <select
+                  value={ratingFilter ?? "all"}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v === "all" || v === "unrated") setRatingFilter(v);
+                    else setRatingFilter(v as RatingValue);
+                  }}
+                  className={selectClass}
+                >
+                  <option value="all">All</option>
+                  <option value="unrated">Unrated</option>
+                  {RATING_UI.map((r) => (
+                    <option key={r.value} value={r.value}>
+                      {r.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {filtered.map((app) => (
+            <DossierCard
+              key={app.id}
+              app={app}
+              rating={ratings[app.id] ?? null}
+              notes={notes[app.id] ?? ""}
+              stage={stages[app.id] ?? app.stage}
+              onRating={(v) => setRatings((r) => ({ ...r, [app.id]: v }))}
+              onNotes={(n) => setNotes((prev) => ({ ...prev, [app.id]: n }))}
+              onStage={(s) => setStages((prev) => ({ ...prev, [app.id]: s }))}
+            />
           ))}
+          {filtered.length === 0 && (
+            <p className="text-center text-slate-500 py-16 border border-dashed border-slate-800 rounded-xl">
+              No applications match these filters.
+            </p>
+          )}
         </div>
-      </div>
-
-      {/* Pipeline sub-filters (stages under the selected job context) */}
-      <div className="mb-3">
-        <p className="text-xs text-slate-500 mb-1.5">Pipeline</p>
-        <div className="flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            onClick={() => setStageFilter("all")}
-            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-              stageFilter === "all"
-                ? "bg-slate-100 text-slate-900 border-slate-100"
-                : "border-slate-700 text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            All stages
-          </button>
-          {PIPELINE_STAGES.map((s) => (
-            <button
-              key={s.value}
-              type="button"
-              onClick={() => setStageFilter(s.value)}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                stageFilter === s.value
-                  ? "bg-slate-100 text-slate-900 border-slate-100"
-                  : "border-slate-700 text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Rating filters */}
-      <div className="mb-8">
-        <p className="text-xs text-slate-500 mb-1.5">Rating</p>
-        <div className="flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            onClick={() => setRatingFilter("all")}
-            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-              ratingFilter === "all"
-                ? "bg-slate-100 text-slate-900 border-slate-100"
-                : "border-slate-700 text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            All ratings
-          </button>
-          <button
-            type="button"
-            onClick={() => setRatingFilter("unrated")}
-            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-              ratingFilter === "unrated"
-                ? "bg-slate-100 text-slate-900 border-slate-100"
-                : "border-slate-700 text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Unrated
-          </button>
-          {RATING_UI.map((r) => (
-            <button
-              key={r.value}
-              type="button"
-              onClick={() => setRatingFilter(r.value)}
-              className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                ratingFilter === r.value
-                  ? "bg-slate-100 text-slate-900 border-slate-100"
-                  : "border-slate-700 text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              <span className={`h-2 w-2 rounded-full ${r.dot}`} />
-              {r.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-5">
-        {filtered.map((app) => (
-          <DossierCard
-            key={app.id}
-            app={app}
-            rating={ratings[app.id] ?? null}
-            notes={notes[app.id] ?? ""}
-            stage={stages[app.id] ?? app.stage}
-            onRating={(v) => setRatings((r) => ({ ...r, [app.id]: v }))}
-            onNotes={(n) => setNotes((prev) => ({ ...prev, [app.id]: n }))}
-            onStage={(s) => setStages((prev) => ({ ...prev, [app.id]: s }))}
-          />
-        ))}
-        {filtered.length === 0 && (
-          <p className="text-center text-slate-500 py-12">
-            No applications match these filters.
-          </p>
-        )}
       </div>
 
       <p className="mt-10 text-center text-xs text-slate-500">
