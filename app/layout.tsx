@@ -23,12 +23,18 @@ export default function RootLayout({
             <a href="/" className="font-bold text-xl tracking-tight text-sky-400">
               US Works
             </a>
-            <nav className="flex gap-5 sm:gap-6 text-sm font-medium">
+            <nav className="flex gap-4 sm:gap-6 text-sm font-medium flex-wrap justify-end">
               <a href="/" className="text-slate-300 hover:text-sky-400 transition-colors">
                 Find a Job
               </a>
               <a href="/post" className="text-slate-300 hover:text-sky-400 transition-colors">
                 Post a Job
+              </a>
+              <a
+                href="/employer/applications"
+                className="text-slate-300 hover:text-sky-400 transition-colors"
+              >
+                Applications
               </a>
             </nav>
           </div>
