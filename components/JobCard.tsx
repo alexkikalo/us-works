@@ -1,16 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
-type Job = {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  salary: string;
-  tags: string[];
-  photoUrl: string;
-  photoCaption: string;
-};
+import type { Job } from "@/lib/jobs";
 
 export function JobCard({ job }: { job: Job }) {
   return (

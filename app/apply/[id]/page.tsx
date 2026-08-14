@@ -1,26 +1,11 @@
 import Link from "next/link";
-
-// Simple mock lookup – in real app this would come from a database
-const jobs: Record<string, { title: string; company: string; location: string; salary: string }> = {
-  "1": { title: "CNC Machinist — 2nd Shift", company: "Precision Forge LLC", location: "Fort Worth, TX", salary: "$28–$34/hr" },
-  "2": { title: "Assembly Technician", company: "North Texas Sensors", location: "Coppell, TX", salary: "$22–$26/hr" },
-  "3": { title: "Maintenance Mechanic", company: "Alliance Fabrication", location: "Haslet, TX", salary: "$30–$38/hr" },
-  "4": { title: "Quality Inspector", company: "Texas Metal Works", location: "Decatur, TX", salary: "$24–$29/hr" },
-  "5": { title: "Welder — MIG/TIG", company: "Lone Star Structures", location: "Saginaw, TX", salary: "$26–$32/hr" },
-  "6": { title: "Production Supervisor", company: "DFW Automation", location: "Grapevine, TX", salary: "$65k–$78k" },
-  "7": { title: "Machine Operator — Press Brake", company: "North Texas Forming", location: "Arlington, TX", salary: "$23–$28/hr" },
-  "8": { title: "Industrial Electrician", company: "Alliance Systems", location: "Roanoke, TX", salary: "$32–$42/hr" },
-  "9": { title: "Fabrication Lead", company: "SteelCraft TX", location: "Fort Worth, TX", salary: "$28–$35/hr" },
-  "10": { title: "Paint / Powder Coat Operator", company: "DFW Coatings", location: "Grand Prairie, TX", salary: "$20–$25/hr" },
-  "11": { title: "Manufacturing Engineer", company: "Precision Components", location: "Keller, TX", salary: "$75k–$95k" },
-  "12": { title: "Shipping & Receiving Clerk", company: "North Texas Logistics", location: "Haslet, TX", salary: "$18–$22/hr" },
-};
+import { getJobById } from "@/lib/jobs";
 
 export default function ApplyPage({ params }: { params: { id: string } }) {
-  const job = jobs[params.id] || {
+  const job = getJobById(params.id) || {
     title: "Manufacturing Position",
     company: "Company",
-    location: "Texas",
+    location: "United States",
     salary: "Competitive",
   };
 
@@ -109,7 +94,7 @@ export default function ApplyPage({ params }: { params: { id: string } }) {
         </button>
 
         <p className="text-xs text-slate-500 text-center">
-          Your application and any media go directly to the employer.
+          Your application and any media go directly to the employer. Exact job addresses are never shown publicly.
         </p>
       </form>
     </div>
