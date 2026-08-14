@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "US Works — Visual Manufacturing Jobs",
   description:
-    "Real shop-floor jobs with location photos. Elevator pitch cards for candidates. More than a piece of paper.",
+    "Real shop-floor jobs with location photos. Optional pitch media when you apply. More than a piece of paper.",
 };
 
 export default function RootLayout({
@@ -29,9 +29,6 @@ export default function RootLayout({
               </a>
               <a href="/post" className="text-slate-300 hover:text-sky-400 transition-colors">
                 Post a Job
-              </a>
-              <a href="/pitches" className="text-slate-300 hover:text-sky-400 transition-colors">
-                Pitch Cards
               </a>
             </nav>
           </div>

@@ -23,24 +23,22 @@ export default function ApplyPage({ params }: { params: { id: string } }) {
       </div>
 
       <form className="space-y-6 bg-slate-900 p-6 md:p-8 rounded-xl border border-slate-800">
-        {/* Highly encouraged video/photo pitch */}
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-1.5">
             Elevator Pitch Reel or Photo{" "}
-            <span className="text-sky-400">(highly encouraged)</span>
+            <span className="text-sky-400">(optional — highly encouraged)</span>
           </label>
           <p className="text-xs text-slate-500 mb-3">
-            30–90 second video of yourself introducing your experience and why you want this role,
-            or a clear photo. This is how you stand out beyond a resume.
+            30–90 second video or a clear photo for <strong className="text-slate-400">this application only</strong>.
+            It goes to this employer, not a public board. Show how you work or introduce your experience.
           </p>
           <div className="border-2 border-dashed border-slate-700 rounded-lg p-10 text-center text-slate-500 bg-slate-950/50">
             Upload video or photo
             <br />
-            <span className="text-xs mt-1 block">Phone video is perfect</span>
+            <span className="text-xs mt-1 block">Phone video is fine · Visible only to this employer</span>
           </div>
         </div>
 
-        {/* Standard application fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-1.5">Full Name</label>
@@ -94,7 +92,7 @@ export default function ApplyPage({ params }: { params: { id: string } }) {
         </button>
 
         <p className="text-xs text-slate-500 text-center">
-          Your application and any media go directly to the employer. Exact job addresses are never shown publicly.
+          Your application and any media go only to this employer for this job. There is no public candidate board.
         </p>
       </form>
     </div>
