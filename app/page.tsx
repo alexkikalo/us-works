@@ -88,7 +88,8 @@ export default function HomePage() {
               Show hourly
             </button>
             <button
-              type="button"\lceil              onClick={() => setPayDisplay("salary")}
+              type="button"
+              onClick={() => setPayDisplay("salary")}
               className={`px-3 py-1.5 rounded-md transition-colors ${
                 payDisplay === "salary"
                   ? "bg-slate-100 text-slate-900"
