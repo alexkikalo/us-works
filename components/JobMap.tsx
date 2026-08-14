@@ -5,12 +5,12 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import Link from "next/link";
 import type { Job } from "@/lib/jobs";
+import { formatPayRange } from "@/lib/pay";
 
 export function JobMap({ jobs }: { jobs: Job[] }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Fix default marker icons only on the client
     const DefaultIcon = L.icon({
       iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
       iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -46,24 +46,28 @@ export function JobMap({ jobs }: { jobs: Job[] }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {jobs.map((job) => (
-          <Marker key={job.id} position={[job.lat, job.lng]}>
-            <Popup>
-              <div className="text-sm min-w-[180px]">
-                <p className="font-semibold text-white">{job.title}</p>
-                <p className="text-slate-300">{job.company}</p>
-                <p className="text-slate-400 text-xs">{job.location}</p>
-                <p className="text-sky-400 font-medium mt-1">{job.salary}</p>
-                <Link
-                  href={`/apply/${job.id}`}
-                  className="inline-block mt-2 text-sky-400 hover:text-sky-300 font-medium"
-                >
-                  View & Apply →
-                </Link>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {jobs.map((job) => {
+          const pay = formatPayRange(job.pay, job.pay.type);
+          return (
+            <Marker key={job.id} position={[job.lat, job.lng]}>
+              <Popup>
+                <div className="text-sm min-w-[180px]">
+                  <p className="font-semibold text-white">{job.title}</p>
+                  <p className="text-slate-300">{job.company}</p>
+                  <p className="text-slate-400 text-xs">{job.location}</p>
+                  <p className="text-sky-400 font-medium mt-1">{pay.primary}</p>
+                  <p className="text-slate-400 text-xs">{pay.secondary}</p>
+                  <Link
+                    href={`/apply/${job.id}`}
+                    className="inline-block mt-2 text-sky-400 hover:text-sky-300 font-medium"
+                  >
+                    View & Apply →
+                  </Link>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </div>
   );
