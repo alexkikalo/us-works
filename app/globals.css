@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #0f172a;
-  --background: #f8fafc;
+  --foreground: #e2e8f0;
+  --background: #0f172a;
 }
 
 body {
@@ -12,7 +12,7 @@ body {
   background: var(--background);
 }
 
-/* Simple masonry-ish grid */
+/* Masonry-style grid */
 .job-grid {
   columns: 1;
   column-gap: 1.25rem;

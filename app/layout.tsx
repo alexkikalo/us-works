@@ -15,22 +15,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <header className="border-b bg-white sticky top-0 z-50">
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-slate-950 text-slate-100`}>
+        <header className="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" className="font-bold text-xl tracking-tight text-brand-700">
+            <a href="/" className="font-bold text-xl tracking-tight text-sky-400">
               US Works
             </a>
             <nav className="flex gap-6 text-sm font-medium">
-              <a href="/" className="hover:text-brand-600">Jobs</a>
-              <a href="/post" className="hover:text-brand-600">Post a Job</a>
-              <a href="/pitches" className="hover:text-brand-600">Candidate Pitches</a>
+              <a href="/" className="text-slate-300 hover:text-sky-400 transition-colors">
+                Find a Job
+              </a>
+              <a href="/post" className="text-slate-300 hover:text-sky-400 transition-colors">
+                Post a Job
+              </a>
             </nav>
           </div>
         </header>
         <main className="min-h-screen">{children}</main>
-        <footer className="border-t bg-white py-8 text-center text-sm text-slate-500">
+        <footer className="border-t border-slate-800 bg-slate-950 py-8 text-center text-sm text-slate-500">
           US Works — Authentic manufacturing jobs. More than a piece of paper.
         </footer>
       </body>

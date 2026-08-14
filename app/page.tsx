@@ -1,6 +1,6 @@
 import { JobCard } from "@/components/JobCard";
 
-// Mock data for lean MVP
+// Expanded mock data for a more fleshed-out board
 const mockJobs = [
   {
     id: "1",
@@ -62,18 +62,78 @@ const mockJobs = [
     photoUrl: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop",
     photoCaption: "Production floor overview",
   },
+  {
+    id: "7",
+    title: "Machine Operator — Press Brake",
+    company: "North Texas Forming",
+    location: "Arlington, TX",
+    salary: "$23–$28/hr",
+    tags: ["Press Brake", "Forming", "1st Shift"],
+    photoUrl: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&h=400&fit=crop",
+    photoCaption: "Press brake and forming area",
+  },
+  {
+    id: "8",
+    title: "Industrial Electrician",
+    company: "Alliance Systems",
+    location: "Roanoke, TX",
+    salary: "$32–$42/hr",
+    tags: ["Electrical", "PLC", "Troubleshooting"],
+    photoUrl: "https://images.unsplash.com/photo-1621905252507-b35492db9b87?w=600&h=400&fit=crop",
+    photoCaption: "Controls and electrical shop",
+  },
+  {
+    id: "9",
+    title: "Fabrication Lead",
+    company: "SteelCraft TX",
+    location: "Fort Worth, TX",
+    salary: "$28–$35/hr",
+    tags: ["Fabrication", "Leadership", "MIG"],
+    photoUrl: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&h=400&fit=crop",
+    photoCaption: "Fabrication floor — real production",
+  },
+  {
+    id: "10",
+    title: "Paint / Powder Coat Operator",
+    company: "DFW Coatings",
+    location: "Grand Prairie, TX",
+    salary: "$20–$25/hr",
+    tags: ["Powder Coat", "Finishing", "2nd Shift"],
+    photoUrl: "https://images.unsplash.com/photo-1581092162384-8987c1d64718?w=600&h=400&fit=crop",
+    photoCaption: "Finishing and powder coat line",
+  },
+  {
+    id: "11",
+    title: "Manufacturing Engineer",
+    company: "Precision Components",
+    location: "Keller, TX",
+    salary: "$75k–$95k",
+    tags: ["Engineering", "Process", "Lean"],
+    photoUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
+    photoCaption: "Engineering and process area",
+  },
+  {
+    id: "12",
+    title: "Shipping & Receiving Clerk",
+    company: "North Texas Logistics",
+    location: "Haslet, TX",
+    salary: "$18–$22/hr",
+    tags: ["Warehouse", "Forklift", "Day Shift"],
+    photoUrl: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=400&fit=crop",
+    photoCaption: "Shipping dock and staging area",
+  },
 ];
 
 export default function HomePage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3">
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="mb-12 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
           Real manufacturing jobs.
-          <span className="block text-brand-600">See the actual floor.</span>
+          <span className="block text-sky-400 mt-1">See the actual floor.</span>
         </h1>
-        <p className="text-slate-600 max-w-2xl mx-auto">
-          Employers show the real shop. Candidates show who they are with a short pitch reel.
+        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+          Employers show the real shop. Candidates show who they are.
           No ghost postings. More than a piece of paper.
         </p>
       </div>
